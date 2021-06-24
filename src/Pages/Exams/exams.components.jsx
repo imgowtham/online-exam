@@ -3,7 +3,7 @@ import React from 'react'
 const Exams = () => {
     return (
         <div>
-            Exams page
+            Online Exams page
         </div>
     )
 }
