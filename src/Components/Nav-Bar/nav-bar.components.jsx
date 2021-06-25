@@ -1,25 +1,24 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import {Link} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
+import ContactsIcon from '@material-ui/icons/Contacts';
+import GroupIcon from '@material-ui/icons/Group';
+import CastForEducationIcon from '@material-ui/icons/CastForEducation';
 
 const drawerWidth = 240;
 
@@ -106,7 +105,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
     const classes = useStyles();
-    const theme = useTheme();
+    const history = useHistory();
     const [anchorEl,
         setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -117,6 +116,12 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const route = (path) => {
+        history.push({
+            pathname: `/${path}`
+        })
+    }
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -174,32 +179,19 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
                     [classes.drawerClose]: !drawerOpen
                 })
             }}>
-                <div className={classes.toolbar}>
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl'
-                            ? <ChevronRightIcon/>
-                            : <ChevronLeftIcon/>}
-                    </IconButton>
-                </div>
-                <Divider/>
+                <div className={classes.toolbar} />
                 <List>
-                    <ListItem button key={"Inbox"}>
-                        <Link to="/Users">
+                    <ListItem button key={"Users"} onClick={() => route('')}>
                             <ListItemIcon>
-                                <InboxIcon/></ListItemIcon><ListItemText primary={"Users"}/>
-                        </Link>
+                                <ContactsIcon/></ListItemIcon><ListItemText primary={"Users"}/>
                     </ListItem>
-                    <ListItem button key={"Starred"}>
-                        <Link to="/Students">
-                            <ListItemIcon>
-                                <InboxIcon/></ListItemIcon><ListItemText primary={"Students"}/>
-                        </Link>
+                    <ListItem button key={"Students"} onClick={() => route('Students')}>
+                    <ListItemIcon>
+                                <GroupIcon/></ListItemIcon><ListItemText primary={"Students"}/>
                     </ListItem>
-                    <ListItem button key={"Starred"}>
-                        <Link to="/Exams">
-                            <ListItemIcon>
-                                <InboxIcon/></ListItemIcon><ListItemText primary={"Exams"}/>
-                        </Link>
+                    <ListItem button key={"Exams"} onClick={() => route('Exams')}>
+                    <ListItemIcon>
+                                <CastForEducationIcon/></ListItemIcon><ListItemText primary={"Exams"}/>
                     </ListItem>
                 </List>
             </Drawer>
