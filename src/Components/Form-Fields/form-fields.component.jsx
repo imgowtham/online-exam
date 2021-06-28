@@ -7,7 +7,6 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
-
     textbox: {
         padding: theme.spacing(1)
     },
@@ -28,20 +27,19 @@ const FormFields = (props) => {
     const classes = useStyles();
     const [batch, setBatch] = React.useState(10);
 
-
     const fieldConstruction = (field) => {
         switch (true) {
             case field.type === "text":
                 return (
                     <Grid item xs={12}>
                         <TextField label={field.name} placeholder={field.placeholder} InputLabelProps={{ shrink: true, }}
-                            variant="outlined" size="small" fullWidth />
+                             size="small" fullWidth />
                     </Grid>
                 );
             case field.type === "dropdown":
                 return (
                     <Grid item xs={12}>
-                        <FormControl className={classes.formControl} variant="outlined" size="small" fullWidth>
+                        <FormControl className={classes.formControl} size="small" fullWidth>
                             <InputLabel shrink id="demo-simple-select-label">Batch</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -69,7 +67,6 @@ const FormFields = (props) => {
                 );
             default:
                 return null;
-
         }
     }
     const handleChange = (event) => {
