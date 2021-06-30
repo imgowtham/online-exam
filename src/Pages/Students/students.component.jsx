@@ -1,14 +1,14 @@
 import React from 'react';
 import Gridtable from '../../Components/Table/table.component';
 import { Grid, Paper, Typography } from '@material-ui/core';
-import { getData } from '../../service'
+import { getData } from '../../service';
+import * as Constant from '../../constant';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '../../Components/Button/button.component';
-import FormField from '../../Components/Form-Fields/form-fields.component';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import FormField from '../../Components/Form-Fields/form-fields.component';
 import IconButton from "@material-ui/core/IconButton";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Formik from '../../Components/Formik/formik.component';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1
@@ -37,71 +37,31 @@ const useStyles = makeStyles((theme) => ({
 const Students = () => {
     const classes = useStyles();
     const [users, setUsers] = React.useState('');
-    const gridColumns = [
-        {
-            title: 'Username',
-            field: 'username'
-        }, {
-            title: 'First Name',
-            field: 'first_name'
-        }, {
-            title: 'Last Name',
-            field: 'last_name'
-        }, {
-            title: 'Email',
-            field: 'email'
-        }, {
-            title: 'Institution',
-            field: 'institution'
-        }, {
-            title: 'Department',
-            field: 'department'
-        }, {
-            title: 'Year',
-            field: 'year'
-        }
-    ]
-    const addStudent = [
-        {
-            name: 'Username',
-            type: 'text',
-            placeholder: 'UserName'
-        }, {
-            name: 'FirstName*',
-            type: 'text',
-            placeholder: 'FirstName'
-        }, {
-            name: 'LastName*',
-            type: 'text',
-            placeholder: 'Lastname'
-        }, {
-            name: 'E-Mail',
-            type: 'text',
-            placeholder: 'E-Mail(Optional)'
-        }, {
-            name: 'Batch',
-            type: 'dropdown'
-        }
-    ]
-    
-    const handleChange = (event) => {
+    const [,setFeildValue] = React.useState([{}]);
+    const myRef = React.useRef(null)
 
-    };
+    const handleRowClick = (rowData) => {
+        myRef.current.scrollIntoView();
+        setFeildValue(rowData);
+        
 
-    React.useEffect(() => {
+    } 
+React.useEffect(() => {
         let url = `http://127.0.0.1:8000/staff/getStudentList/`
         getData(url).then(response => response && setUsers(response
             ?.users_list))
     }, [])
     return (
         <div className={classes.root}>
+            
             {users
                 ? <Gridtable
                     griddata={users}
                     gridtitle={'Student List'}
-                    gridcolumns={gridColumns} />
+                    gridcolumns={Constant.STUDENT_GRIDCOLUMNS}
+                    handleRowClick={handleRowClick} />
                 : null}
-            <Grid container spacing={3}>
+            <Grid container spacing={3} ref={myRef}>
                 <Grid container item xs={12} sm={12} md={6}>
                     <Paper className={classes.wrapper}>
                         <Grid>
@@ -112,14 +72,9 @@ const Students = () => {
                         <Grid>
                             <Button color='secondary' label='View Students' />
                         </Grid>
-                        <FormField fields={addStudent} />
-                        <Grid>
-                            <FormControlLabel
-                                control={<Checkbox onChange={handleChange} name="checkedA" color="primary" size="small" />}
-                                label="Active"
-                            />
-                        </Grid>
-                        <Button color='primary' label='save' />
+                        <Formik fields={Constant.STUDENT_ADDSTUDENT}/>
+                        {/* <FormField fields={Constant.STUDENT_ADDSTUDENT} /> */}
+                        
                     </Paper>
                 </Grid>
                 <Grid container item xs={12} sm={12} md={6} style={{ display: "flow-root" }}>

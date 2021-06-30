@@ -33,7 +33,7 @@ const FormFields = (props) => {
                 return (
                     <Grid item xs={12}>
                         <TextField label={field.name} placeholder={field.placeholder} InputLabelProps={{ shrink: true, }}
-                             size="small" fullWidth />
+                             size="small" value = {"sathiya"} fullWidth />
                     </Grid>
                 );
             case field.type === "dropdown":
