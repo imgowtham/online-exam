@@ -1,0 +1,16 @@
+#root table tr th{
+    background-color: #3f51b5;
+    padding: 8px 10px;
+    color: #fff;
+    text-transform: none
+}
+#root table tr th span:hover{color: #fff }
+#root table tbody tr td{
+    padding: 12px;
+}
+#root table tbody tr:nth-child(even){
+    background-color: rgba(0,0,0,0.08);
+}
+.material-Table .MuiToolbar-root  + div {
+margin: 0px 20px;
+}

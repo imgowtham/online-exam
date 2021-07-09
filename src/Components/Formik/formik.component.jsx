@@ -9,7 +9,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
-// import * as yup from 'yup';
+import * as yup from 'yup';
 const useStyles = makeStyles((theme) => ({
     textbox: {
         padding: theme.spacing(1)
@@ -35,9 +35,11 @@ const FormikField = (props) => {
     
     const fieldConstruction = (field) => {
         switch (true) {
+            
             case field.type === "text":
                 let textName = field.name;
                 return (
+                    
                     <Grid item xs={12}>
                         <TextField placeholder={field.placeholder} InputLabelProps={{ shrink: true, }} size="small"
                             id={textName}
@@ -45,8 +47,8 @@ const FormikField = (props) => {
                             label={textName}
                             value={formik.values.textName}
                             onChange={formik.handleChange}
-                            error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
+                            error={formik.touched[textName.replace(/"*"/g,"")] && Boolean(formik.errors[textName])}
+                            helperText={formik.touched[textName] && formik.errors[textName]}
                             fullWidth />
                     </Grid>
                 );
@@ -97,14 +99,20 @@ const FormikField = (props) => {
                 return null;
         }
     }
-    // const validationSchema = yup.object({
-    //     email: yup
-    //       .string('Enter your password')
-    //       .min(8, 'Password should be of minimum 8 characters length')
-    //       .required('Password is required'),
-    //   });
+    const validationSchema = yup.object({
+        Username: yup
+          .string('Enter your password')
+          .min(2, '')
+          .required('required'),
+          FirstName: yup
+          .string('Enter your password')
+          .min(2, '')
+          .required('First name required'),
+        
+      });
     const formik = useFormik({
         initialValues: fieldValue,
+        validationSchema : validationSchema,
         onSubmit: (values) => {
           alert(JSON.stringify(values, null, 2));
         },
@@ -115,7 +123,15 @@ const FormikField = (props) => {
                 <Grid container item xs={12} spacing={3}>
                     {props.fields?.map(field => fieldConstruction(field))}
                 </Grid>
-                
+                <TextField placeholder={"sample"} InputLabelProps={{ shrink: true, }} size="small"
+                            id={"Firstname"}
+                            name={"Firstname"}
+                            label={"Firstname"}
+                            value={formik.values.Firstname}
+                            onChange={formik.handleChange}
+                            error={formik.touched.Firstname && Boolean(formik.errors.Firstname)}
+                            helperText={formik.touched.Firstname && formik.errors.Firstname}
+                            fullWidth />
                 <Button color="primary" size="small" variant="contained" type="submit">
                     Save
                 </Button>

@@ -1,14 +1,12 @@
 import React from 'react';
 import Gridtable from '../../Components/Table/table.component';
-import { Grid, Paper, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography,Grow } from '@material-ui/core';
 import { getData } from '../../service';
 import * as Constant from '../../constant';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '../../Components/Button/button.component';
-// import FormField from '../../Components/Form-Fields/form-fields.component';
-import IconButton from "@material-ui/core/IconButton";
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Formik from '../../Components/Formik/formik.component';
+import FormField from '../../Components/Form-Fields/form-fields.component';
+// import Formik from '../../Components/Formik/formik.component';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1
@@ -35,17 +33,37 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 const Students = () => {
+    console.log("student component");
     const classes = useStyles();
     const [users, setUsers] = React.useState('');
-    const [,setFeildValue] = React.useState([{}]);
+    const [add,setAdd] = React.useState(false);
+    const [fieldValue,setFeildValue] = React.useState([{}]);
+    const [animation,setAnimation] = React.useState(false);
     const myRef = React.useRef(null)
 
     const handleRowClick = (rowData) => {
-        myRef.current.scrollIntoView();
+        // debugger;
+        // console.log(rowData);
+        // let fieldData = {
+        //     'Username' : [{
+        //         'value' : rowData.username,
+        //         'disabled' : true
+        //                 }]
+            
+        // };
         setFeildValue(rowData);
+        scrollToView("scroll");
+    }
+    const scrollToView = (value) => {
+        if(value === "add"){
+            setFeildValue({});
+        }
+        setAdd(true);
+        setTimeout(() => myRef.current.scrollIntoView(),1000);
+        setAnimation(true);
         
-
-    } 
+     }
+     
 React.useEffect(() => {
         let url = `http://127.0.0.1:8000/staff/getStudentList/`
         getData(url).then(response => response && setUsers(response
@@ -53,15 +71,24 @@ React.useEffect(() => {
     }, [])
     return (
         <div className={classes.root}>
-            
             {users
-                ? <Gridtable
+                ? 
+                <div className="studentTable">
+                    <Grid>
+                        <Button color='primary' label='Add Students' type="add" buttonClick={()=> scrollToView("add")}/>
+                    </Grid>
+                    <Gridtable
                     griddata={users}
                     gridtitle={'Student List'}
                     gridcolumns={Constant.STUDENT_GRIDCOLUMNS}
                     handleRowClick={handleRowClick} />
+                </div>
                 : null}
-            <Grid container spacing={3} ref={myRef}>
+            
+             {add 
+                ?
+                <Grid container spacing={3} ref={myRef}>
+                <Grow in={animation}>
                 <Grid container item xs={12} sm={12} md={6}>
                     <Paper className={classes.wrapper}>
                         <Grid>
@@ -72,11 +99,16 @@ React.useEffect(() => {
                         <Grid>
                             <Button color='secondary' label='View Students' />
                         </Grid>
-                        <Formik fields={Constant.STUDENT_ADDSTUDENT}/>
-                        {/* <FormField fields={Constant.STUDENT_ADDSTUDENT} /> */}
+                        {/* <Formik fields={Constant.STUDENT_ADDSTUDENT}/> */}
+                        <FormField fields={Constant.STUDENT_ADDSTUDENT} values = {fieldValue}/>
                         
                     </Paper>
                 </Grid>
+                </Grow>
+                <Grow 
+                    in={animation}
+                    style={{transformOrigin: '0 0 0'}}
+                    {...(animation ? {timeout:1000} : {})}>
                 <Grid container item xs={12} sm={12} md={6} style={{ display: "flow-root" }}>
                     <Paper className={classes.wrapper}>
                         <Grid>
@@ -88,27 +120,7 @@ React.useEffect(() => {
                         </Grid>
 
                         <Grid className={classes.upload}>
-                            <input
-                                accept="image/*"
-                                className={classes.input}
-                                id="icon-button-file"
-                                type="file"
-                            />
-                            <label htmlFor="icon-button-file">
-                                <IconButton
-                                    color="primary"
-                                    aria-label="upload"
-                                    component="span"
-                                >
-                                    <CloudUploadIcon />
-
-                                </IconButton>
-                                <div>
-                                    <Typography variant="h6" color="primary">
-                                        Upload CSV File
-                                    </Typography>
-                                </div>
-                            </label>
+                            <FormField fields={Constant.STUDENT_ADDCSV} />
                         </Grid>
                         <Grid>
                             <Button label="Submit" color="primary" />
@@ -117,7 +129,11 @@ React.useEffect(() => {
 
                     </Paper>
                 </Grid>
+                </Grow>
             </Grid>
+                 : null}
+                
+            
         </div>
     )
 }
