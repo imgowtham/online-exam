@@ -1,13 +1,16 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import MenuNavBar from './Components/Nav-Bar/nav-bar.components';
-import {makeStyles} from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import {Switch, Route} from 'react-router-dom';
+import {makeStyles, CssBaseline, Button, Grow} from '@material-ui/core';
+import {Close} from '@material-ui/icons';
+import {Switch, Route, Redirect} from 'react-router-dom';
 import Students from './Pages/Students/students.component';
 import Users from './Pages/Users/users.component';
 import Exams from './Pages/Exams/exams.components';
-
+import {SnackbarProvider} from 'notistack';
+import SignIn from './Pages/Sign-In/sign-in.component';
+import {useAuth} from './auth';
+import {connect} from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,10 +30,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const App = () => {
+const App = (props) => {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-
+    const auth = useAuth();
+    const [open,
+        setOpen] = React.useState(false);
     const handleDrawerOpen = () => {
         setOpen(status => !status);
     };
@@ -38,23 +42,90 @@ const App = () => {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const notistackRef = React.createRef();
+
+    const onClickDismiss = key => () => {
+        notistackRef
+            .current
+            .closeSnackbar(key);
+
+    }
     return (
-        <div className={classes.root}>
-            <CssBaseline/>
-            <MenuNavBar
-                handleDrawerOpen={handleDrawerOpen}
-                handleDrawerClose={handleDrawerClose}
-                drawerOpen={open}/>
-            <main className={classes.content}>
-                <div className={classes.toolbar}/>
-                <Switch>
-                    <Route exact path="/" component={Users}  />
-                    <Route exact path="/Students" component={Students}  />
-                    <Route exact path="/Exams" component={Exams}  />
-                </Switch>
-            </main>
-        </div>
+        <SnackbarProvider
+            maxSnack={3}
+            preventDuplicate={true}
+            autoHideDuration={5000}
+            TransitionComponent={Grow}
+            ref={notistackRef}
+            classes={{
+            variantSuccess: classes.success,
+            variantError: classes.error
+        }}
+            action={(key) => (
+            <Button
+                style={{
+                color: '#fff'
+            }}
+                onClick={onClickDismiss(key)}>
+                <Close/>
+            </Button>
+        )}
+            anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+        }}>
+            <div className={classes.root}>
+                {props.currentUser
+                    ? <React.Fragment>
+                            <CssBaseline/>
+                            <MenuNavBar
+                                handleDrawerOpen={handleDrawerOpen}
+                                handleDrawerClose={handleDrawerClose}
+                                drawerOpen={open}/>
+                            <main className={classes.content}>
+                                <div className={classes.toolbar}/>
+                                <Switch>
+                                    <PrivateRoute path="/Students" user={props.currentUser}>
+                                        <Students/>
+                                    </PrivateRoute>
+                                    <PrivateRoute path="/Exams" user={props.currentUser}>
+                                        <Exams/>
+                                    </PrivateRoute>
+                                </Switch>
+                            </main>
+                        </React.Fragment>
+                    : <Switch>
+                        <Route>
+                            <SignIn/>
+                        </Route>
+                    </Switch>
+}
+            </div>
+        </SnackbarProvider>
     );
 }
 
-export default App;
+const mapStateToProps = state => ({currentUser: state.user.currentUser})
+
+const PrivateRoute = ({
+    children,
+    user,
+    ...rest
+}) => {
+    return (
+        <Route
+            {...rest}
+            render={({location}) => user
+            ? (children)
+            : (<Redirect
+                to={{
+                pathname: "/login",
+                state: {
+                    from: location
+                }
+            }}/>)}/>
+    );
+}
+
+export default connect(mapStateToProps)(App)

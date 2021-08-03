@@ -1,8 +1,0 @@
-.View_Students,.Sample_Download{
-    float: right;
-}
-.Add_Students,.Add_Exam{
-    float: right;
-    z-index: 9;
-    margin: 16px 10px !important;
-}

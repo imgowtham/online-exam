@@ -1,24 +1,28 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles} from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
+import {
+    makeStyles,
+    Drawer,
+    AppBar,
+    Toolbar,
+    List,
+    CssBaseline,
+    Typography,
+    IconButton,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Menu,
+    MenuItem
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import {useHistory} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import GroupIcon from '@material-ui/icons/Group';
 import CastForEducationIcon from '@material-ui/icons/CastForEducation';
+import {connect} from 'react-redux';
+import { setCurrentUser} from '../../redux/user/user.actions';
 
 const drawerWidth = 240;
 
@@ -103,9 +107,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
+const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen,currentUser, setCurrentUser}) => {
     const classes = useStyles();
-    const history = useHistory();
     const [anchorEl,
         setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -113,15 +116,11 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
         setAnchorEl(event.currentTarget);
     };
 
+    const logout = () => setCurrentUser('');
+
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const route = (path) => {
-        history.push({
-            pathname: `/${path}`
-        })
-    }
     return (
         <div className={classes.root}>
             <CssBaseline/>
@@ -161,8 +160,7 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
                         }}
                             open={open}
                             onClose={handleClose}>
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={logout}>Log out</MenuItem>
                         </Menu>
                     </div>
                 </Toolbar>
@@ -179,19 +177,19 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
                     [classes.drawerClose]: !drawerOpen
                 })
             }}>
-                <div className={classes.toolbar} />
+                <div className={classes.toolbar}/>
                 <List>
-                    <ListItem button key={"Users"} onClick={() => route('')}>
-                            <ListItemIcon>
-                                <ContactsIcon/></ListItemIcon><ListItemText primary={"Users"}/>
+                    <ListItem button key={"Users"} component={Link} to="/">
+                        <ListItemIcon>
+                            <ContactsIcon/></ListItemIcon><ListItemText primary={"Users"}/>
                     </ListItem>
-                    <ListItem button key={"Students"} onClick={() => route('Students')}>
-                    <ListItemIcon>
-                                <GroupIcon/></ListItemIcon><ListItemText primary={"Students"}/>
+                    <ListItem button key={"Students"} component={Link} to="/Students">
+                        <ListItemIcon>
+                            <GroupIcon/></ListItemIcon><ListItemText primary={"Students"}/>
                     </ListItem>
-                    <ListItem button key={"Exams"} onClick={() => route('Exams')}>
-                    <ListItemIcon>
-                                <CastForEducationIcon/></ListItemIcon><ListItemText primary={"Exams"}/>
+                    <ListItem button key={"Exams"} component={Link} to="/Exams">
+                        <ListItemIcon>
+                            <CastForEducationIcon/></ListItemIcon><ListItemText primary={"Exams"}/>
                     </ListItem>
                 </List>
             </Drawer>
@@ -199,4 +197,10 @@ const MenuNavBar = ({handleDrawerClose, handleDrawerOpen, drawerOpen}) => {
     );
 }
 
-export default MenuNavBar
+const mapStateToProps = state => ({currentUser: state.user.currentUser});
+
+const mapDispatchToProps = dispatch => ({
+    setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuNavBar);

@@ -1,49 +1,33 @@
 /*Student Fields*/
-export const STUDENT_GRIDCOLUMNS = [
+
+
+export const STUDENTS_FORM = [
     {
-        title: 'Username',
-        field: 'username'
-    }, {
-        title: 'First Name',
-        field: 'first_name'
-    }, {
-        title: 'Last Name',
-        field: 'last_name'
-    }, {
-        title: 'Email',
-        field: 'email'
-    }, {
-        title: 'Institution',
-        field: 'institution'
-    }, {
-        title: 'Department',
-        field: 'department'
-    }, {
-        title: 'Year',
-        field: 'year'
-    }
-]
-export const STUDENT_ADDSTUDENT = [
-    {
-        name: 'Username',
+        name: 'username',
+        displayName: 'Username',
         type: 'text',
-        placeholder: 'UserName'
+        placeholder: 'UserName',
     }, {
-        name: 'FirstName*',
+        name: 'first_name',
+        displayName: 'FirstName*',
         type: 'text',
         placeholder: 'FirstName'
     }, {
-        name: 'LastName*',
+        name: 'last_name',
+        displayName: 'LastName*',
         type: 'text',
         placeholder: 'Lastname'
     }, {
-        name: 'E-Mail',
+        name: 'email',
+        displayName: 'E-Mail',
         type: 'text',
         placeholder: 'E-Mail(Optional)'
     }, {
-        name: 'Batch',
+        name:'year',
+        displayName: 'Batch',
         type: 'dropdown',
-        placeholder: 'Batch'
+        placeholder: 'Batch',
+        values: [{'name': 'Batch', 'value' : 'batch'}]
     },
     {
         name: 'Active',
@@ -59,27 +43,7 @@ export const STUDENT_ADDCSV = [
         }
 ]
 /*Exams Fields*/
-export const EXAMS_GRIDCOLUMNS = [
-    {
-        title: 'Name',
-        field: 'name'
-    }, {
-        title: 'Question Paper',
-        field: 'question_paper'
-    }, {
-        title: 'Batch',
-        field: 'batch'
-    }, {
-        title: 'Exam Duration',
-        field: 'exam_duration'
-    }, {
-        title: 'Start Date',
-        field: 'start_date'
-    }, {
-        title: 'End Date',
-        field: 'end_date'
-    }
-]
+
 export const EXAMS_ADDEXAM = [
     {
         name: 'Exam Name',
